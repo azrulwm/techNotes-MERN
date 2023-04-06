@@ -6,7 +6,7 @@ const asyncHandler = require("express-async-handler");
 // @route GET /notes
 // @access Private
 const getAllNotes = asyncHandler(async (req, res) => {
-  const notes = await User.find().lean();
+  const notes = await Note.find().lean();
 
   if (!notes?.length) {
     return res.status(400).json({ message: "No notes found" });
@@ -51,44 +51,28 @@ const createNewNote = asyncHandler(async (req, res) => {
 // @route PATCH /notes
 // @access Private
 const updateNote = asyncHandler(async (req, res) => {
-  const { id, username, roles, active, password } = req.body;
+  const { id, title, text, completed, ticket } = req.body;
 
   // Confirm data
-  if (
-    !id ||
-    !username ||
-    !Array.isArray(roles) ||
-    !roles.length ||
-    typeof active !== "boolean"
-  ) {
+  if (!id || !title || !text || typeof completed !== "boolean" || !ticket) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const user = await User.findById(id).exec();
-
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
+  // Check for notes
+  const note = await Note.findOne({ _id: id }).exec();
+  if (!note) {
+    return res.status(400).json({ message: "Note not found" });
   }
 
-  // Check for duplicates
-  const duplicate = await User.findOne({ username }).lean().exec();
-  // Allow updates to the original user
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate username" });
-  }
+  note.title = title;
+  note.text = text;
+  note.completed = completed;
 
-  user.username = username;
-  user.roles = roles;
-  user.active = active;
+  const updatedNote = await note.save();
 
-  if (password) {
-    // Hash password
-    user.password = await bcrypt.hash(password, 10); // 10 salt rounds
-  }
-
-  const updatedUser = await user.save();
-
-  res.json({ message: `${updatedUser.username} updated` });
+  res.json({
+    message: `Ticket no ${updatedNote.ticket} has already been updated`,
+  });
 });
 
 // @desc Delete a note
@@ -98,23 +82,17 @@ const deleteNote = asyncHandler(async (req, res) => {
   const { id } = req.body;
 
   if (!id) {
-    return res.status(400).json({ message: "User ID Required" });
+    return res.status(400).json({ message: "Note ID Required" });
   }
 
-  const note = await Note.findOne({ user: id }).lean().exec();
-  if (note) {
-    return res.status(400).json({ message: "User has assigned notes" });
+  const note = await Note.findById(id).exec();
+  if (!note) {
+    return res.status(400).json({ message: "Note not found" });
   }
 
-  const user = await User.findById(id).exec();
+  const result = await note.deleteOne();
 
-  if (!user) {
-    return res.status(400).json({ messsage: "User not found" });
-  }
-
-  const result = await user.deleteOne();
-
-  const reply = `Username ${result.username} with ID ${result._id} deleted`;
+  const reply = `Note with ticket number ${result.ticket} is deleted`;
 
   res.json(reply);
 });
