@@ -25,7 +25,7 @@ const NewUserForm = () => {
   }, [username]);
 
   useEffect(() => {
-    setValidPassword(USER_REGEX.test(password));
+    setValidPassword(PWD_REGEX.test(password));
   }, [password]);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const NewUserForm = () => {
   };
 
   const canSave =
-    [roles.length, validUsername, validPassword].every(boolean) && !isLoading;
+    [roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
 
   const onSaveUserClicked = async (e) => {
     e.preventDefault();

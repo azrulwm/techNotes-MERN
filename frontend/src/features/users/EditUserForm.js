@@ -135,42 +135,42 @@ const EditUserForm = ({ user }) => {
         <label htmlFor="password" className="form__label">
           Password: <span className="nowrap">[empty = no change]</span>{" "}
           <span className="nowrap">[4-12 chars incl. !@#$%]</span>
-          <input
-            type="password"
-            className={`form__input ${validPwdClass}`}
-            id="password"
-            value={password}
-            onChange={onPasswordChanged}
-          />
-          <label
-            htmlFor="user-active"
-            className="form__label form__checkbox-container"
-          >
-            ACTIVE:{" "}
-            <input
-              type="checkbox"
-              className="form__checkbox"
-              id="user-active"
-              name="user-active"
-              checked={active}
-              onChange={onActiveChanged}
-            />
-          </label>
-          <label htmlFor="roles" className="form__label">
-            ASSIGNED ROLES:
-          </label>
-          <select
-            name="roles"
-            id="roles"
-            className={`form__select ${validRolesClass}`}
-            multiple={true}
-            size="3"
-            value={roles}
-            onChange={onRolesChanged}
-          >
-            {options}
-          </select>
         </label>
+        <input
+          type="password"
+          className={`form__input ${validPwdClass}`}
+          id="password"
+          value={password}
+          onChange={onPasswordChanged}
+        />
+        <label
+          htmlFor="user-active"
+          className="form__label form__checkbox-container"
+        >
+          ACTIVE:{" "}
+          <input
+            type="checkbox"
+            className="form__checkbox"
+            id="user-active"
+            name="user-active"
+            checked={active}
+            onChange={onActiveChanged}
+          />
+        </label>
+        <label htmlFor="roles" className="form__label">
+          ASSIGNED ROLES:
+        </label>
+        <select
+          name="roles"
+          id="roles"
+          className={`form__select ${validRolesClass}`}
+          multiple={true}
+          size="3"
+          value={roles}
+          onChange={onRolesChanged}
+        >
+          {options}
+        </select>
       </form>
     </>
   );
