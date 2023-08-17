@@ -11,7 +11,7 @@ const PreFetch = () => {
     const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate());
 
     return () => {
-      console.log("subscribing");
+      console.log("unsubscribing");
       notes.unsubscribe();
       users.unsubscribe();
     };
