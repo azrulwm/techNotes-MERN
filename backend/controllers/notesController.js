@@ -61,10 +61,10 @@ const createNewNote = asyncHandler(async (req, res) => {
 // @route PATCH /notes
 // @access Private
 const updateNote = asyncHandler(async (req, res) => {
-  const { id, title, text, completed, ticket } = req.body;
+  const { id, user, title, text, completed } = req.body;
 
   // Confirm data
-  if (!id || !title || !text || typeof completed !== "boolean" || !ticket) {
+  if (!id || !user || !title || !text || typeof completed !== "boolean") {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -74,15 +74,22 @@ const updateNote = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Note not found" });
   }
 
+  // Check for duplicate title
+  const duplicate = await Note.findOne({ title }).lean().exec();
+
+  // Allow renaming of the original note
+  if (duplicate && duplicate?._id.toString() !== id) {
+    return res.status(409).json({ message: "Duplicate note title" });
+  }
+
+  note.user = user;
   note.title = title;
   note.text = text;
   note.completed = completed;
 
   const updatedNote = await note.save();
 
-  res.json({
-    message: `Ticket no ${updatedNote.ticket} has already been updated`,
-  });
+  res.json(`'${updatedNote.title}' updated`);
 });
 
 // @desc Delete a note

@@ -40,10 +40,10 @@ const EditNoteForm = ({ note, users }) => {
     if (canSave) {
       await updateNote({
         id: note.id,
+        user: userId,
         title,
         text,
         completed,
-        ticket: note.ticket,
       });
     }
   };
