@@ -158,6 +158,10 @@ a:focus-visible {
   gap: 0.5em;
 }
 
+.dash-header__container--small {
+  max-width: 800px;
+}
+
 .dash-container {
   padding: 0.75em 0.5em 0.5em;
   flex-grow: 1;
