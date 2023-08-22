@@ -14,8 +14,11 @@ import PreFetch from "./features/auth/PreFetch";
 import PersistLogin from "./features/auth/PersistLogin";
 import RequireAuth from "./features/auth/RequireAuth";
 import { ROLES } from "./config/roles";
+import useTitle from "./hooks/useTitle";
 
 function App() {
+  useTitle("Dan D. Repairs");
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
